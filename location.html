@@ -1,0 +1,75 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Запрос местоположения</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Получение местоположения</h1>
+  <p>Нажмите на кнопку, чтобы разрешить доступ к вашему местоположению.</p>
+  <button onclick="getLocation()">Запросить местоположение</button>
+  <div class="result" id="result"></div>
+
+  <script>
+    function getLocation() {
+      const resultDiv = document.getElementById('result');
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            resultDiv.innerHTML = `<p>Ваши координаты:</p>
+                                   <p>Широта: ${latitude}</p>
+                                   <p>Долгота: ${longitude}</p>`;
+          },
+          (error) => {
+            let errorMessage = '';
+            switch (error.code) {
+              case error.PERMISSION_DENIED:
+                errorMessage = 'Пользователь отклонил запрос на определение местоположения.';
+                break;
+              case error.POSITION_UNAVAILABLE:
+                errorMessage = 'Информация о местоположении недоступна.';
+                break;
+              case error.TIMEOUT:
+                errorMessage = 'Запрос на определение местоположения занял слишком много времени.';
+                break;
+              default:
+                errorMessage = 'Произошла неизвестная ошибка.';
+            }
+            resultDiv.innerHTML = `<p style="color: red;">Ошибка: ${errorMessage}</p>`;
+          }
+        );
+      } else {
+        resultDiv.innerHTML = '<p style="color: red;">Ваш браузер не поддерживает Geolocation API.</p>';
+      }
+    }
+  </script>
+</body>
+</html>
